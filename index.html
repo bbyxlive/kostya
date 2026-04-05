@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Костя + Даша ❤️ Наша история</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Quicksand', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            color: #f0eae3;
+        }
+
+        /* --- ФОН ДЛЯ ЭКРАНА ПАРОЛЯ (bg_password.jpg) --- */
+        .password-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('bg_password.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.6s ease;
+        }
+
+        /* Затемнение для читаемости текста на экране пароля */
+        .password-overlay {
+            background: rgba(0, 0, 0, 0.6);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .password-card {
+            background: rgba(20, 30, 45, 0.85);
+            backdrop-filter: blur(16px);
+            border-radius: 64px;
+            padding: 40px 32px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            border: 1px solid #c97e5a80;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .password-card h2 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            color: #ffc2a1;
+        }
+
+        .password-card input {
+            width: 100%;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 60px;
+            border: none;
+            background: #fef3e4;
+            font-size: 1.2rem;
+            text-align: center;
+            font-weight: bold;
+            color: #2c1a2b;
+        }
+
+        .password-card button {
+            background: #b95f3a;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .error-msg {
+            color: #ffaa88;
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+
+        /* --- ФОН ДЛЯ ОСНОВНОГО САЙТА (fon.jpg) --- */
+        .main-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+            background-image: url('fon.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Затемнение для читаемости текста внутри сайта */
+        .content-overlay {
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(2px);
+            min-height: 100vh;
+            width: 100%;
+            padding: 30px 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Остальные стили */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 70px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(3px);
+            border: 1px solid #ffb68b40;
+        }
+
+        .hero h1 {
+            font-size: 2.7rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fdd6b0, #f08f6e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .nicknames {
+            font-size: 1.4rem;
+            background: #00000055;
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 60px;
+            margin: 20px 0;
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            border-left: 4px solid #b95f3a;
+            padding-left: 18px;
+            display: inline-block;
+        }
+
+        .music-player {
+            background: #1a2936aa;
+            border-radius: 100px;
+            padding: 12px 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            backdrop-filter: blur(5px);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .play-btn {
+            background: #b95f3a;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            font-size: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            margin-top: 50px;
+            opacity: 0.7;
+        }
+
+        .quiz-section {
+            background: #0c1b26b3;
+            backdrop-filter: blur(8px);
+            border-radius: 56px;
+            padding: 32px 24px;
+            margin: 30px 0;
+        }
+
+        .question {
+            background: #1f2f3faa;
+            border-radius: 48px;
+            padding: 24px;
+            margin-bottom: 28px;
+        }
+
+        .question p {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .quiz-option {
+            background: #2e4057;
+            padding: 12px 22px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #aa7c64;
+            font-weight: 500;
+        }
+
+        .quiz-option.selected {
+            background: #b95f3a;
+            border-color: #ffd2b5;
+            box-shadow: 0 0 0 2px #ffb27a;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 50px 0 30px;
+        }
+
+        .gallery img {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 32px;
+            border: 3px solid #b95f3a;
+            transition: transform 0.3s;
+            background: #33212b;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.02);
+        }
+
+        .result-message {
+            background: #281d2cd9;
+            border-radius: 48px;
+            padding: 30px;
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 30px 0;
+            border: 1px solid #f4ac7a;
+        }
+
+        button.submit-quiz {
+            background: #b95f3a;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.8rem; }
+            .question p { font-size: 1.2rem; }
+            .gallery img { width: 120px; height: 120px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Экран ввода пароля с фоном bg_password.jpg -->
+<div class="password-screen" id="passwordScreen">
+    <div class="password-overlay">
+        <div class="password-card">
+            <h2>🔐 Наше пространство</h2>
+            <p>Только для Кости и Даши</p>
+            <input type="password" id="passwordInput" placeholder="Введи дату нашего знакомства" autocomplete="off">
+            <button id="unlockBtn">Войти ❤️</button>
+            <div id="errorMsg" class="error-msg"></div>
+            <div style="margin-top: 20px; font-size: 0.8rem;">*Подсказка: дата нашего знакомства</div>
+        </div>
+    </div>
+</div>
+
+<!-- Основной сайт с фоном fon.jpg -->
+<div class="main-content" id="mainContent">
+    <div class="content-overlay">
+        <div class="container">
+            <div class="hero">
+                <h1>Костя + Даша</h1>
+                <div class="nicknames">🐱 Котя &nbsp;&nbsp;⟡&nbsp;&nbsp; Родная/Любимая</div>
+                <div class="quote">«давай встречаться» — и закружилось счастье ✨</div>
+                <div class="music-player">
+                    🎧 <span>thrill pill — пластик</span>
+                    <audio id="audioPlayer" loop>
+                        <source src="song.mp3" type="audio/mpeg">
+                        Ваш браузер не поддерживает аудио.
+                    </audio>
+                    <button class="play-btn" id="playPauseBtn">▶ Включить музыку</button>
+                </div>
+            </div>
+
+            <div class="quiz-section">
+                <h2 style="text-align:center; margin-bottom:20px;">💌 А ты помнишь, родной?</h2>
+                <div id="questionsBlock"></div>
+                <div style="text-align:center;"><button class="submit-quiz" id="submitQuizBtn">✨ Завершить и узнать сюрприз ✨</button></div>
+            </div>
+
+            <div id="resultContainer" style="display: none;">
+                <div class="result-message" id="resultHtml"></div>
+            </div>
+
+            <h2 style="text-align:center; margin-top: 20px;">📸 18 наших кадров</h2>
+            <div class="gallery" id="galleryBlock"></div>
+            <footer>
+                🌊 голубой & бордовый — наша гамма | для самого лучшего Кости от твоей Даши
+            </footer>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Пароль
+    const correctPassword = "09.09.22";
+    document.getElementById('unlockBtn').addEventListener('click', () => {
+        let pwd = document.getElementById('passwordInput').value.trim();
+        if(pwd === correctPassword || pwd === "9.09.22" || pwd === "09.09.2022" || pwd === "9.9.22") {
+            document.getElementById('passwordScreen').style.display = 'none';
+            const main = document.getElementById('mainContent');
+            main.style.display = 'block';
+            setTimeout(() => { main.style.opacity = '1'; }, 30);
+        } else {
+            document.getElementById('errorMsg').innerText = '❌ Не тот код, попробуй ещё (09.09.22)';
+        }
+    });
+
+    // Музыка
+    const audio = document.getElementById('audioPlayer');
+    const playBtn = document.getElementById('playPauseBtn');
+    let isPlaying = false;
+
+    playBtn.addEventListener('click', () => {
+        if (isPlaying) {
+            audio.pause();
+            playBtn.innerHTML = '▶ Включить музыку';
+        } else {
+            audio.play().catch(e => console.log("Автовоспроизведение заблокировано, но кнопка работает"));
+            playBtn.innerHTML = '⏸ Пауза';
+        }
+        isPlaying = !isPlaying;
+    });
+
+    // Вопросы
+    const questions = [
+        { text: "Какой цвет глаз у твоей любимой? 💙", options: ["Карие", "Зелёные", "Голубые", "Серые"], correct: 2 },
+        { text: "Какое слово Костя говорит Даше чаще всего? 🥰", options: ["Привет", "Родная", "Красивая", "Скучаю"], correct: 1 },
+        { text: "Когда у нас будет первый год отношений? 🎂", options: ["1 июля", "25 мая", "17 октября", "8 мая"], correct: 1 },
+        { text: "Что из перечисленного Костя ОБОЖАЕТ? 🍬", options: ["Политику", "Сладкое", "code10", "Всё вышеперечисленное"], correct: 3 },
+        { text: "Как Даша называет Константина? 🐱", options: ["Костян", "Котя", "Костик", "Константин"], correct: 1 }
+    ];
+
+    let userChoices = new Array(questions.length).fill(null);
+    let quizSubmitted = false;
+
+    function renderQuestions() {
+        const container = document.getElementById('questionsBlock');
+        container.innerHTML = '';
+        questions.forEach((q, idx) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question';
+            qDiv.innerHTML = `<p>${idx+1}. ${q.text}</p><div class="options" id="options-${idx}"></div>`;
+            const optsDiv = qDiv.querySelector(`.options`);
+            q.options.forEach((opt, optIdx) => {
+                const optSpan = document.createElement('div');
+                optSpan.className = 'quiz-option';
+                optSpan.innerText = opt;
+                optSpan.dataset.qIdx = idx;
+                optSpan.dataset.optVal = optIdx;
+                optSpan.addEventListener('click', () => {
+                    if(quizSubmitted) return;
+                    document.querySelectorAll(`#options-${idx} .quiz-option`).forEach(el => el.classList.remove('selected'));
+                    optSpan.classList.add('selected');
+                    userChoices[idx] = optIdx;
+                });
+                optsDiv.appendChild(optSpan);
+            });
+            container.appendChild(qDiv);
+        });
+    }
+
+    function showResult() {
+        let score = 0;
+        for(let i=0; i<questions.length; i++) {
+            if(userChoices[i] !== null && userChoices[i] === questions[i].correct) score++;
+        }
+        const total = questions.length;
+        let message = '';
+        if(score === total) {
+            message = `⭐ Идеально, любимый! ${score}/${total} — ты знаешь меня лучше всех. Твоя родная навсегда твоя. 💖 Обнимаю и целую. Кстати, твой подарок — я всегда буду рядом, даже на расстоянии клика. 🎁`;
+        } else if(score >= total-1) {
+            message = `💘 Почти отлично! ${score}/${total} — ты прекрасно помнишь важное. А ещё помни: я люблю тебя бесконечно, Котя. 😘`;
+        } else {
+            message = `💗 Милый, у тебя ${score}/${total} правильных ответов. Но главное — ты мой, и это не тест. А давай повторим наши даты и моменты вместе? Ты для меня самый лучший. 🌹`;
+        }
+        message += `<br><br>✨ <strong>Твоя Даша говорит:</strong> Спасибо, что ты есть. Ты мой чемпион, моя опора. Люблю! ❤️‍🔥<br>🎶 thrill pill для настроения, а сладкое — для тебя, родной.`;
+        document.getElementById('resultHtml').innerHTML = message;
+        document.getElementById('resultContainer').style.display = 'block';
+    }
+
+    document.getElementById('submitQuizBtn').addEventListener('click', () => {
+        if(quizSubmitted) return;
+        let allAnswered = true;
+        for(let i=0; i<questions.length; i++) {
+            if(userChoices[i] === null) { allAnswered = false; break; }
+        }
+        if(!allAnswered) {
+            alert('Ответь на все вопросы, родной! ❤️');
+            return;
+        }
+        quizSubmitted = true;
+        showResult();
+    });
+
+    function loadGallery() {
+        const gallery = document.getElementById('galleryBlock');
+        gallery.innerHTML = '';
+        for(let i = 1; i <= 18; i++) {
+            const img = document.createElement('img');
+            img.src = `${i}.jpg`;
+            img.alt = `Наше фото ${i}`;
+            img.onerror = () => {
+                img.src = 'https://placehold.co/400x400/2e4057/f5c2a0?text=Фото+' + i;
+            };
+            gallery.appendChild(img);
+        }
+    }
+
+    renderQuestions();
+    loadGallery();
+</script>
+</body>
+</html>
